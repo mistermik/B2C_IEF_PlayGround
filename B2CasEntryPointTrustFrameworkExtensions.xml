@@ -11,6 +11,10 @@
         <UserHelpText>Your Department Name</UserHelpText>
         <UserInputType>TextBox</UserInputType>
       </ClaimType>
+      <ClaimType Id="correlationId">
+        <DisplayName>correlation ID</DisplayName>
+        <DataType>string</DataType>
+    </ClaimType>
       <ClaimType Id="city">
         <DisplayName>City where you work</DisplayName>
         <DataType>string</DataType>
@@ -175,7 +179,7 @@
             <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
           </Metadata>
           <OutputClaims>
-            <OutputClaim ClaimTypeReferenceId="code_verifier_salt" DefaultValue="{Context:CorrelationId}" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="code_verifier_salt"  DefaultValue="{Context:CorrelationId}" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="code_challenge_method" DefaultValue="S256" AlwaysUseDefaultValue="true" />
           </OutputClaims>
           <OutputClaimsTransformations>
@@ -218,8 +222,8 @@
             <Key Id="client_secret" StorageReferenceId="B2C_1A_AzureADMultiTenant" />
           </CryptographicKeys>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
-            <InputClaim ClaimTypeReferenceId="code_challenge" />
+           <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
+            <InputClaim ClaimTypeReferenceId="code_challenge"/>
             <InputClaim ClaimTypeReferenceId="code_challenge_method" />
           </InputClaims>
           <OutputClaims>
@@ -231,6 +235,8 @@
             <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
             <OutputClaim ClaimTypeReferenceId="city" />
+            <OutputClaim ClaimTypeReferenceId="code_challenge" />
+            <OutputClaim ClaimTypeReferenceId="code_challenge_method" />
           </OutputClaims>
           
           <OutputClaimsTransformations>
@@ -238,7 +244,10 @@
             <OutputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
             <OutputClaimsTransformation ReferenceId="CreateAlternativeSecurityId" />
             <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
+            <OutputClaimsTransformation ReferenceId="CreatePkceCodeVerifierPlainText" />
+            <!--<OutputClaimsTransformation ReferenceId="CreatePkceCodeChallenge" /> -->
           </OutputClaimsTransformations>
+          <IncludeTechnicalProfile ReferenceId="AADCommon-OpenIdConnect-CreatePkceValues" />
         </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>

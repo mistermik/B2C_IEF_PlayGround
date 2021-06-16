@@ -6,7 +6,9 @@
   PolicySchemaVersion="0.3.0.0"
   TenantId="identityb2c.onmicrosoft.com"
   PolicyId="B2C_1A_B2CAsEntryPointsignup_signin"
-  PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_B2CAsEntryPointsignup_signin">
+  PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_B2CAsEntryPointsignup_signin"
+  DeploymentMode="Development"
+  UserJourneyRecorderEndpoint="urn:journeyrecorder:applicationinsights">
 
   <BasePolicy>
     <TenantId>identityb2c.onmicrosoft.com</TenantId>
@@ -15,6 +17,9 @@
 
   <RelyingParty>
     <DefaultUserJourney ReferenceId="B2CAsEntryPointCustomSignUpSignIn" />
+    <UserJourneyBehaviors>
+        <JourneyInsights TelemetryEngine="ApplicationInsights" InstrumentationKey="76fbe1b0-f5da-495d-ad9f-c9bd97ba1378" DeveloperMode="true" ClientEnabled="false" ServerEnabled="true" TelemetryVersion="1.0.0" />
+      </UserJourneyBehaviors>
     <TechnicalProfile Id="PolicyProfile">
       <DisplayName>PolicyProfile</DisplayName>
       <Protocol Name="OpenIdConnect" />
@@ -27,11 +32,14 @@
         <OutputClaim ClaimTypeReferenceId="identityProvider" />
         <OutputClaim ClaimTypeReferenceId="tenantId" AlwaysUseDefaultValue="true" DefaultValue="{Policy:TenantObjectId}" />
         <OutputClaim ClaimTypeReferenceId="city" DefaultValue="brescia" />
+        <OutputClaim ClaimTypeReferenceId="correlationId" DefaultValue="{Context:CorrelationId}" />
+        <OutputClaim ClaimTypeReferenceId="code_verifier_plaintext" /> 
+        <OutputClaim ClaimTypeReferenceId="code_challenge_method" />
+        <OutputClaim ClaimTypeReferenceId="code_challenge" />
+
       </OutputClaims>
       <SubjectNamingInfo ClaimType="sub" />
     </TechnicalProfile>
   </RelyingParty>
 </TrustFrameworkPolicy>
 
-
-<!-- test-->
