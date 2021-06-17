@@ -45,6 +45,10 @@
         <DisplayName>PKCE Code Challenge</DisplayName>
         <DataType>string</DataType>
       </ClaimType>
+      <ClaimType Id="code_challenge_Raw">
+        <DisplayName>PKCE Code Challenge Raw</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
       <ClaimType Id="code_challenge_method">
         <DisplayName>PKCE Code Challenge Method</DisplayName>
         <DataType>string</DataType>
@@ -68,13 +72,14 @@
           <InputClaim ClaimTypeReferenceId="code_verifier_salt" TransformationClaimType="inputClaim2" />
         </InputClaims>
         <InputParameters>
+          <!--<InputParameter Id="stringFormat" DataType="string" Value="0{0}{1}" /> -->
           <InputParameter Id="stringFormat" DataType="string" Value="0{0}{1}" />
         </InputParameters>
         <OutputClaims>
           <OutputClaim ClaimTypeReferenceId="code_verifier" TransformationClaimType="outputClaim" />
         </OutputClaims>
       </ClaimsTransformation>
-      <ClaimsTransformation Id="CreatePkceCodeChallenge" TransformationMethod="Hash">
+      <ClaimsTransformation Id="CreatePkceCodeChallengeRaw" TransformationMethod="Hash">
         <InputClaims>
           <InputClaim ClaimTypeReferenceId="code_verifier_plaintext" TransformationClaimType="plaintext" />
           <InputClaim ClaimTypeReferenceId="code_verifier_salt" TransformationClaimType="salt" />
@@ -83,12 +88,47 @@
           <InputParameter Id="randomizerSecret" DataType="string" Value="B2C_1A_PKCEClientSecret" />
         </InputParameters>
         <OutputClaims>
-          <OutputClaim ClaimTypeReferenceId="code_challenge" TransformationClaimType="hash" />
+          <OutputClaim ClaimTypeReferenceId="code_challenge_Raw" TransformationClaimType="hash" />
         </OutputClaims>
       </ClaimsTransformation>
+      <ClaimsTransformation Id="CreatePkceCodeChallenge" TransformationMethod="StringSubstring">
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="code_challenge_Raw" TransformationClaimType="inputClaim" />
+      </InputClaims>
+      <InputParameters>
+        <InputParameter Id="startIndex" DataType="int" Value="0" />
+        <InputParameter Id="length" DataType="int" Value="43" />
+      </InputParameters>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="code_challenge" TransformationClaimType="outputClaim" />
+      </OutputClaims>
+    </ClaimsTransformation>
     </ClaimsTransformations>
     </BuildingBlocks>
   <ClaimsProviders>
+      <ClaimsProvider>
+    <DisplayName>Azure Active Directory</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="AAD-UserWriteUsingAlternativeSecurityId">
+        <PersistedClaims>
+          <PersistedClaim ClaimTypeReferenceId="City"/>
+          </PersistedClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  <ClaimsProvider>
+    <DisplayName>Self Asserted</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="SelfAsserted-Social">
+        <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="displayName" />
+            <OutputClaim ClaimTypeReferenceId="givenName" />
+            <OutputClaim ClaimTypeReferenceId="surname" />
+          <OutputClaim ClaimTypeReferenceId="city"/>
+          </OutputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
     <ClaimsProvider>
       <DisplayName>Facebook</DisplayName>
       <TechnicalProfiles>
@@ -185,6 +225,7 @@
           <OutputClaimsTransformations>
             <OutputClaimsTransformation ReferenceId="CreatePkceCodeVerifierPlainText" />
             <OutputClaimsTransformation ReferenceId="CreatePkceCodeVerifier" />
+            <OutputClaimsTransformation ReferenceId="CreatePkceCodeChallengeRaw" />
             <OutputClaimsTransformation ReferenceId="CreatePkceCodeChallenge" />
           </OutputClaimsTransformations>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
@@ -225,6 +266,7 @@
            <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
             <InputClaim ClaimTypeReferenceId="code_challenge"/>
             <InputClaim ClaimTypeReferenceId="code_challenge_method" />
+            <InputClaim ClaimTypeReferenceId="code_verifier" />
           </InputClaims>
           <OutputClaims>
             <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="oid" />
@@ -234,9 +276,6 @@
             <OutputClaim ClaimTypeReferenceId="displayName" PartnerClaimType="name" />
             <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
-            <OutputClaim ClaimTypeReferenceId="city" />
-            <OutputClaim ClaimTypeReferenceId="code_challenge" />
-            <OutputClaim ClaimTypeReferenceId="code_challenge_method" />
           </OutputClaims>
           
           <OutputClaimsTransformations>
@@ -245,7 +284,6 @@
             <OutputClaimsTransformation ReferenceId="CreateAlternativeSecurityId" />
             <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
             <OutputClaimsTransformation ReferenceId="CreatePkceCodeVerifierPlainText" />
-            <!--<OutputClaimsTransformation ReferenceId="CreatePkceCodeChallenge" /> -->
           </OutputClaimsTransformations>
           <IncludeTechnicalProfile ReferenceId="AADCommon-OpenIdConnect-CreatePkceValues" />
         </TechnicalProfile>
@@ -256,7 +294,12 @@
   <UserJourneys>
     <UserJourney Id="B2CAsEntryPointCustomSignUpSignIn">
       <OrchestrationSteps>
-        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="CallMyCTTP" TechnicalProfileReferenceId="AADCommon-OpenIdConnect-CreatePkceValues" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="2" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
           <ClaimsProviderSelections>
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange" />
             <!--<ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" /> -->
@@ -268,7 +311,7 @@
           </ClaimsExchanges>
         </OrchestrationStep>
         <!-- Check if the user has selected to sign in using one of the social providers -->
-        <OrchestrationStep Order="2" Type="ClaimsExchange">
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
               <Value>objectId</Value>
@@ -283,7 +326,7 @@
           </ClaimsExchanges>
         </OrchestrationStep>
         <!-- For social IDP authentication, attempt to find the user account in the directory. -->
-        <OrchestrationStep Order="3" Type="ClaimsExchange">
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
               <Value>authenticationSource</Value>
@@ -296,7 +339,7 @@
           </ClaimsExchanges>
         </OrchestrationStep>
         <!-- Show self-asserted page only if the directory does not have the user account already (i.e. we do not have an objectId).            This can only happen when authentication happened using a social IDP. If local account was created or authentication done           using ESTS in step 2, then an user account must exist in the directory by this time. -->
-        <OrchestrationStep Order="4" Type="ClaimsExchange">
+        <OrchestrationStep Order="5" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
               <Value>objectId</Value>
@@ -308,7 +351,7 @@
           </ClaimsExchanges>
         </OrchestrationStep>
         <!-- This step reads any user attributes that we may not have received when authenticating using ESTS so they can be sent            in the token. -->
-        <OrchestrationStep Order="5" Type="ClaimsExchange">
+        <OrchestrationStep Order="6" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
               <Value>authenticationSource</Value>
@@ -321,7 +364,7 @@
           </ClaimsExchanges>
         </OrchestrationStep>
         <!-- The previous step (SelfAsserted-Social) could have been skipped if there were no attributes to collect               from the user. So, in that case, create the user in the directory if one does not already exist               (verified using objectId which would be set from the last step if account was created in the directory. -->
-        <OrchestrationStep Order="6" Type="ClaimsExchange">
+        <OrchestrationStep Order="7" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
               <Value>objectId</Value>
@@ -332,7 +375,7 @@
             <ClaimsExchange Id="AADUserWrite" TechnicalProfileReferenceId="AAD-UserWriteUsingAlternativeSecurityId" />
           </ClaimsExchanges>
         </OrchestrationStep>
-        <OrchestrationStep Order="7" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+        <OrchestrationStep Order="8" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
       </OrchestrationSteps>
       <ClientDefinition ReferenceId="DefaultWeb" />
     </UserJourney>

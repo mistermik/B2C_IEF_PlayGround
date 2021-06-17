@@ -31,12 +31,12 @@
         <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="sub"/>
         <OutputClaim ClaimTypeReferenceId="identityProvider" />
         <OutputClaim ClaimTypeReferenceId="tenantId" AlwaysUseDefaultValue="true" DefaultValue="{Policy:TenantObjectId}" />
-        <OutputClaim ClaimTypeReferenceId="city" DefaultValue="brescia" />
+        <OutputClaim ClaimTypeReferenceId="city" />
         <OutputClaim ClaimTypeReferenceId="correlationId" DefaultValue="{Context:CorrelationId}" />
         <OutputClaim ClaimTypeReferenceId="code_verifier_plaintext" /> 
         <OutputClaim ClaimTypeReferenceId="code_challenge_method" />
         <OutputClaim ClaimTypeReferenceId="code_challenge" />
-
+        <OutputClaim ClaimTypeReferenceId="code_verifier" />        
       </OutputClaims>
       <SubjectNamingInfo ClaimType="sub" />
     </TechnicalProfile>
