@@ -264,9 +264,9 @@
           </CryptographicKeys>
           <InputClaims>
            <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
-            <InputClaim ClaimTypeReferenceId="code_challenge"/>
+            <InputClaim ClaimTypeReferenceId="code_challenge" DefaultValue="kYYJ3eggtBUrYUFuxFZ9UOqo18oEVZTo24BAu_4TyXw" AlwaysUseDefaultValue="true" />
             <InputClaim ClaimTypeReferenceId="code_challenge_method" />
-            <InputClaim ClaimTypeReferenceId="code_verifier" />
+            <InputClaim ClaimTypeReferenceId="code_verifier" DefaultValue="JM6D3LUOKsRNmhYY0wca5Xx6sIPCo.0R7-Jw4hdOI1VlQcjOi2gIBOooziTuSGq6R9l2kYnTctqB7A62nQ1coLHZNwf0M9SdFASwvz.C7y-p1k_Ri1LNL6iH8dNzWN-G" AlwaysUseDefaultValue="true" />
           </InputClaims>
           <OutputClaims>
             <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="oid" />
@@ -289,7 +289,61 @@
         </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>
-    
+    <!-- AzureAD RSA 512 Private Key JWT-->
+    <ClaimsProvider>
+      <Domain>AzureAD RSA 512 Private Key JWT</Domain>
+      <DisplayName>Common AAD RSA 512 Private Key JWT</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="AADCommon-OpenIdConnect-RSA">
+          <DisplayName>AzureAD MultiTenant RSA 512 Private Key JWT</DisplayName>
+          <Description>Login with your AzureAD account</Description>
+          <Protocol Name="OpenIdConnect" />
+          <Metadata>
+            <Item Key="METADATA">https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration</Item>
+            <!-- Update the Client ID below to the Application ID -->
+            <Item Key="client_id">60652a04-7342-4e16-b0db-0b4cfe36c2b6</Item>
+            <Item Key="response_types">code</Item>
+            <Item Key="scope">openid profile</Item>
+            <Item Key="response_mode">form_post</Item>
+            <Item Key="HttpBinding">POST</Item>
+            <Item Key="UsePolicyInRedirectUri">false</Item>
+            <Item Key="DiscoverMetadataByTokenIssuer">true</Item>
+            <Item Key="token_endpoint_auth_method">private_key_jwt</Item>
+            <Item Key="token_endpoint_auth_alg">RS512</Item>
+            <!-- trying to add additional claim-->
+            <!--Insert b2c-extensions-app application ID here, for example: 11111111-1111-1111-1111-111111111111-->
+            <Item Key="02427953-f9a6-4700-9a8f-35f53cf42440"></Item>
+            <!--Insert b2c-extensions-app application ObjectId here, for example: 22222222-2222-2222-2222-222222222222-->
+            <Item Key="69f7ed2b-781c-4c1a-96e1-63d9774fa9e3"></Item>
+            <!-- The key below allows you to specify each of the Azure AD tenants that can be used to sign in. Update the GUIDs below for each tenant. -->
+            <!--<Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/187f16e9-81ab-4516-8db7-1c8ef94ffeca,https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111</Item>-->
+            <!-- The commented key below specifies that users from any tenant can sign-in. Uncomment if you would like anyone with an Azure AD account to be able to sign in. -->
+            <Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="client_secret" StorageReferenceId="B2C_1A_AzureADMultiTenant" />
+            <Key Id="assertion_signing_key" StorageReferenceId="B2C_1A_B2CRSA1"/>
+          </CryptographicKeys>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="oid" />
+            <OutputClaim ClaimTypeReferenceId="tenantId" PartnerClaimType="tid" />
+            <OutputClaim ClaimTypeReferenceId="givenName" PartnerClaimType="given_name" />
+            <OutputClaim ClaimTypeReferenceId="surName" PartnerClaimType="family_name" />
+            <OutputClaim ClaimTypeReferenceId="displayName" PartnerClaimType="name" />
+            <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
+            <OutputClaim ClaimTypeReferenceId="city" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
+            <OutputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
+            <OutputClaimsTransformation ReferenceId="CreateAlternativeSecurityId" />
+            <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-SocialLogin" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
   </ClaimsProviders>
   <UserJourneys>
     <UserJourney Id="B2CAsEntryPointCustomSignUpSignIn">
@@ -304,6 +358,7 @@
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange" />
             <!--<ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" /> -->
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange-PKCE" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange-RSA" />
             <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
           </ClaimsProviderSelections>
           <ClaimsExchanges>
@@ -321,6 +376,7 @@
           <ClaimsExchanges>
             <ClaimsExchange Id="AADExchange" TechnicalProfileReferenceId="AADCommon-OpenIdConnect" />
             <ClaimsExchange Id="AADExchange-PKCE" TechnicalProfileReferenceId="AADCommon-OpenIdConnect-PKCE" />
+            <ClaimsExchange Id="AADExchange-RSA" TechnicalProfileReferenceId="AADCommon-OpenIdConnect-RSA" />
             <ClaimsExchange Id="FacebookExchange" TechnicalProfileReferenceId="Facebook-OAUTH" />
             <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
           </ClaimsExchanges>
