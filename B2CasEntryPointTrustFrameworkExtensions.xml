@@ -1,10 +1,25 @@
-﻿<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="identityb2c.onmicrosoft.com" PolicyId="B2C_1A_B2CAsEntryPointTrustFrameworkExtensions" PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_B2CAsEntryPointTrustFrameworkExtensions" TenantObjectId="6764b1d3-3210-41e8-b54a-392aedf0a876">
+<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="identityb2c.onmicrosoft.com" PolicyId="B2C_1A_B2CAsEntryPointTrustFrameworkExtensions" PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_B2CAsEntryPointTrustFrameworkExtensions" TenantObjectId="6764b1d3-3210-41e8-b54a-392aedf0a876">
   <BasePolicy>
     <TenantId>identityb2c.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_B2CAsEntryPointTrustFrameworkBase</PolicyId>
   </BasePolicy>
   <BuildingBlocks>
     <ClaimsSchema>
+      <ClaimType Id="trustFrameworkPolicy">
+        <DisplayName>Trust framework policy name</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="identityProviderAccessToken">
+        <DisplayName>Identity Provider Access Token</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText>Stores the access token of the identity provider.</AdminHelpText>
+      </ClaimType>
+      <ClaimType Id="issuer">
+        <DisplayName>issuer</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText>The unique identifier of an OpenID Connect identity provider.</AdminHelpText>
+        <UserHelpText>The unique identifier of an OpenID Connect identity provider.</UserHelpText>
+      </ClaimType>
       <ClaimType Id="extension_department">
         <DisplayName>Department Identification</DisplayName>
         <DataType>string</DataType>
@@ -14,14 +29,14 @@
       <ClaimType Id="correlationId">
         <DisplayName>correlation ID</DisplayName>
         <DataType>string</DataType>
-    </ClaimType>
+      </ClaimType>
       <ClaimType Id="city">
         <DisplayName>City where you work</DisplayName>
         <DataType>string</DataType>
         <UserInputType>DropdownSingleSelect</UserInputType>
         <Restriction>
           <Enumeration Text="Berlin" Value="berlin" />
-          <Enumeration Text="London" Value="bondon" />
+          <Enumeration Text="London" Value="London" />
           <Enumeration Text="Seattle" Value="seattle" />
         </Restriction>
       </ClaimType>
@@ -92,39 +107,89 @@
         </OutputClaims>
       </ClaimsTransformation>
       <ClaimsTransformation Id="CreatePkceCodeChallenge" TransformationMethod="StringSubstring">
-      <InputClaims>
-        <InputClaim ClaimTypeReferenceId="code_challenge_Raw" TransformationClaimType="inputClaim" />
-      </InputClaims>
-      <InputParameters>
-        <InputParameter Id="startIndex" DataType="int" Value="0" />
-        <InputParameter Id="length" DataType="int" Value="43" />
-      </InputParameters>
-      <OutputClaims>
-        <OutputClaim ClaimTypeReferenceId="code_challenge" TransformationClaimType="outputClaim" />
-      </OutputClaims>
-    </ClaimsTransformation>
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="code_challenge_Raw" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <InputParameters>
+          <InputParameter Id="startIndex" DataType="int" Value="0" />
+          <InputParameter Id="length" DataType="int" Value="43" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="code_challenge" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
     </ClaimsTransformations>
-    </BuildingBlocks>
+  </BuildingBlocks>
   <ClaimsProviders>
-      <ClaimsProvider>
+  <!--Create the otherMails claim from the email claim using the CreateOtherMailsFromEmail claims transformation and then persist the otherMails 
+  claim in the AAD-UserWriteUsingLogonEmail technical profile -->
+  <ClaimsProvider>
     <DisplayName>Azure Active Directory</DisplayName>
     <TechnicalProfiles>
-      <TechnicalProfile Id="AAD-UserWriteUsingAlternativeSecurityId">
+      <TechnicalProfile Id="AAD-UserWriteUsingLogonEmail">
+        <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="CreateOtherMailsFromEmail"/>
+          </InputClaimsTransformations>
         <PersistedClaims>
-          <PersistedClaim ClaimTypeReferenceId="City"/>
+          <PersistedClaim ClaimTypeReferenceId="otherMails" />
+        </PersistedClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="otherMails" />
+        </OutputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  <!--  pass the otherMails claim out from the LocalAccountSignUpWithLogonEmail technical profile that is invoked to register a local account-->
+    <ClaimsProvider>
+    <DisplayName>Local Account</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="LocalAccountSignUpWithLogonEmail">
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="otherMails"/>
+          </OutputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  <!-- Setting claim representing policy ID - The options for setting this value are TFP (trust framework policy) -->
+  <ClaimsProvider>
+    <DisplayName>Token Issuer</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="JwtIssuer">
+        <Metadata>
+          <!--<Item Key="IssuanceClaimPattern">AuthorityAndTenantGuid</Item> -->
+          <Item Key="IssuanceClaimPattern">AuthorityWithTfp</Item>
+          <Item Key="AuthenticationContextReferenceClaimPattern">None</Item>
+          </Metadata>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Azure Active Direct</DisplayName>
+      <!--pass the otherMails claim out from the LocalAccountDiscoveryUsingEmailAddress technical profile that is invoked to recover a local password -->
+      <TechnicalProfiles>
+      <TechnicalProfile Id="LocalAccountDiscoveryUsingEmailAddress">
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="otherMails" />
+          </OutputClaims>
+        </TechnicalProfile>
+        <TechnicalProfile Id="AAD-UserWriteUsingAlternativeSecurityId">
+          <PersistedClaims>
+            <PersistedClaim ClaimTypeReferenceId="City" />
           </PersistedClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>
-  <ClaimsProvider>
-    <DisplayName>Self Asserted</DisplayName>
-    <TechnicalProfiles>
-      <TechnicalProfile Id="SelfAsserted-Social">
-        <OutputClaims>
+    <ClaimsProvider>
+      <DisplayName>Self Asserted</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="SelfAsserted-Social">
+          <OutputClaims>
             <OutputClaim ClaimTypeReferenceId="displayName" />
             <OutputClaim ClaimTypeReferenceId="givenName" />
             <OutputClaim ClaimTypeReferenceId="surname" />
-          <OutputClaim ClaimTypeReferenceId="city"/>
+            <OutputClaim ClaimTypeReferenceId="city" />
+            <!-- pass the otherMails claim out from the SelfAsserted-Social technical profile that is invoked to register a social account-->
+            <OutputClaim ClaimTypeReferenceId="otherMails" />
           </OutputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
@@ -134,7 +199,7 @@
       <TechnicalProfiles>
         <TechnicalProfile Id="Facebook-OAUTH">
           <Metadata>
-            <Item Key="client_id">facebook_clientid</Item>
+            <Item Key="client_id">163874059119101</Item>
             <Item Key="scope">email public_profile</Item>
             <Item Key="ClaimsEndpoint">https://graph.facebook.com/me?fields=id,first_name,last_name,name,email</Item>
           </Metadata>
@@ -196,6 +261,7 @@
             <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
             <OutputClaim ClaimTypeReferenceId="city" />
+            <OutputClaim ClaimTypeReferenceId="identityProviderAccessToken" PartnerClaimType="{oauth2:access_token}" />
           </OutputClaims>
           <OutputClaimsTransformations>
             <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
@@ -212,14 +278,14 @@
       <Domain>AzureAD PKCE</Domain>
       <DisplayName>Common AAD with PKCE</DisplayName>
       <TechnicalProfiles>
-      <TechnicalProfile Id="AADCommon-OpenIdConnect-CreatePkceValues">
+        <TechnicalProfile Id="AADCommon-OpenIdConnect-CreatePkceValues">
           <DisplayName>CreatePkceValues</DisplayName>
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
           <Metadata>
             <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
           </Metadata>
           <OutputClaims>
-            <OutputClaim ClaimTypeReferenceId="code_verifier_salt"  DefaultValue="{Context:CorrelationId}" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="code_verifier_salt" DefaultValue="{Context:CorrelationId}" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="code_challenge_method" DefaultValue="S256" AlwaysUseDefaultValue="true" />
           </OutputClaims>
           <OutputClaimsTransformations>
@@ -230,8 +296,6 @@
           </OutputClaimsTransformations>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
         </TechnicalProfile>
-
-
         <TechnicalProfile Id="AADCommon-OpenIdConnect-PKCE">
           <DisplayName>AzureAD MultiTenant with PKCE</DisplayName>
           <Description>Login with your AzureAD account</Description>
@@ -246,24 +310,23 @@
             <Item Key="HttpBinding">POST</Item>
             <Item Key="UsePolicyInRedirectUri">false</Item>
             <Item Key="DiscoverMetadataByTokenIssuer">true</Item>
-           <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
-           <Item Key="ClaimResolverUrlFormatting">true</Item>
+            <Item Key="IncludeClaimResolvingInClaimsHandling">true</Item>
+            <Item Key="ClaimResolverUrlFormatting">true</Item>
             <!-- trying to add additional claim-->
             <!--Insert b2c-extensions-app application ID here, for example: 11111111-1111-1111-1111-111111111111-->
-            <Item Key="02427953-f9a6-4700-9a8f-35f53cf42440"/>
+            <Item Key="02427953-f9a6-4700-9a8f-35f53cf42440" />
             <!--Insert b2c-extensions-app application ObjectId here, for example: 22222222-2222-2222-2222-222222222222-->
-            <Item Key="69f7ed2b-781c-4c1a-96e1-63d9774fa9e3"/>
+            <Item Key="69f7ed2b-781c-4c1a-96e1-63d9774fa9e3" />
             <!-- The key below allows you to specify each of the Azure AD tenants that can be used to sign in. Update the GUIDs below for each tenant. -->
             <!--<Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/187f16e9-81ab-4516-8db7-1c8ef94ffeca,https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111</Item>-->
             <!-- The commented key below specifies that users from any tenant can sign-in. Uncomment if you would like anyone with an Azure AD account to be able to sign in. -->
             <Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/</Item>
           </Metadata>
-         
           <CryptographicKeys>
             <Key Id="client_secret" StorageReferenceId="B2C_1A_AzureADMultiTenant" />
           </CryptographicKeys>
           <InputClaims>
-           <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
+            <InputClaim ClaimTypeReferenceId="acr" PartnerClaimType="acr_values" DefaultValue="ComingFromAADCommon-OpenIdConnect-PKCE" />
             <InputClaim ClaimTypeReferenceId="code_challenge" DefaultValue="kYYJ3eggtBUrYUFuxFZ9UOqo18oEVZTo24BAu_4TyXw" AlwaysUseDefaultValue="true" />
             <InputClaim ClaimTypeReferenceId="code_challenge_method" />
             <InputClaim ClaimTypeReferenceId="code_verifier" DefaultValue="JM6D3LUOKsRNmhYY0wca5Xx6sIPCo.0R7-Jw4hdOI1VlQcjOi2gIBOooziTuSGq6R9l2kYnTctqB7A62nQ1coLHZNwf0M9SdFASwvz.C7y-p1k_Ri1LNL6iH8dNzWN-G" AlwaysUseDefaultValue="true" />
@@ -277,7 +340,6 @@
             <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
           </OutputClaims>
-          
           <OutputClaimsTransformations>
             <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
             <OutputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
@@ -309,7 +371,102 @@
             <Item Key="UsePolicyInRedirectUri">false</Item>
             <Item Key="DiscoverMetadataByTokenIssuer">true</Item>
             <Item Key="token_endpoint_auth_method">private_key_jwt</Item>
-            <Item Key="token_endpoint_auth_alg">RS512</Item>
+            <Item Key="token_signing_algorithm">RS256</Item>
+            <!-- trying to add additional claim-->
+            <!--Insert b2c-extensions-app application ID here, for example: 11111111-1111-1111-1111-111111111111-->
+            <Item Key="02427953-f9a6-4700-9a8f-35f53cf42440"></Item>
+            <!--Insert b2c-extensions-app application ObjectId here, for example: 22222222-2222-2222-2222-222222222222-->
+            <Item Key="69f7ed2b-781c-4c1a-96e1-63d9774fa9e3"></Item>
+            <!-- The key below allows you to specify each of the Azure AD tenants that can be used to sign in. Update the GUIDs below for each tenant. -->
+            <!--<Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/187f16e9-81ab-4516-8db7-1c8ef94ffeca,https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111</Item>-->
+            <!-- The commented key below specifies that users from any tenant can sign-in. Uncomment if you would like anyone with an Azure AD account to be able to sign in. -->
+            <Item Key="ValidTokenIssuerPrefixes">https://login.microsoftonline.com/</Item>
+            <!--<Item Key="issuer">https://login.microsoftonline.com/187f16e9-81ab-4516-8db7-1c8ef94ffeca/v2.0</Item>-->
+            <!-- <Item Key="issuer">https://login.microsoftonline.com/{Context:tid}/v2.0</Item>-->
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="client_secret" StorageReferenceId="B2C_1A_AzureADMultiTenant" />
+            <Key Id="assertion_signing_key" StorageReferenceId="B2C_1A_B2CRSA" />
+          </CryptographicKeys>
+          <OutputClaims>
+            <!--<OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="sub" /> -->
+            <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="oid" />
+            <OutputClaim ClaimTypeReferenceId="tenantId" PartnerClaimType="tid" />
+            <OutputClaim ClaimTypeReferenceId="givenName" PartnerClaimType="given_name" />
+            <OutputClaim ClaimTypeReferenceId="surName" PartnerClaimType="family_name" />
+            <OutputClaim ClaimTypeReferenceId="displayName" PartnerClaimType="name" />
+            <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
+            <OutputClaim ClaimTypeReferenceId="city" />
+            <OutputClaim ClaimTypeReferenceId="identityProviderAccessToken" PartnerClaimType="{oauth2:access_token}" />
+            <!--<OutputClaim ClaimTypeReferenceId="issuer" DefaultValue="https://login.microsoftonline.com/187f16e9-81ab-4516-8db7-1c8ef94ffeca/v2.0" /> -->
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
+            <OutputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
+            <OutputClaimsTransformation ReferenceId="CreateAlternativeSecurityId" />
+            <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-SocialLogin" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <!-- MisterMik ADFS-->
+    <ClaimsProvider>
+      <Domain>IDENTITY.MISTERMIK.COM</Domain>
+      <DisplayName>MisterMik Identity</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="ADFSIdentity-SAML2">
+          <DisplayName>ADFS Identity.Mitermik.Com</DisplayName>
+          <Description>Login with your AD FS account</Description>
+          <Protocol Name="SAML2" />
+          <Metadata>
+            <Item Key="WantsEncryptedAssertions">false</Item>
+            <Item Key="PartnerEntity">https://adfs.identity.mistermik.com/federationmetadata/2007-06/federationmetadata.xml</Item>
+            <Item Key="XmlSignatureAlgorithm">Sha256</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="SamlMessageSigning" StorageReferenceId="B2C_1A_ADFSSAMLSigningCert" />
+          </CryptographicKeys>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="userPrincipalName" />
+            <OutputClaim ClaimTypeReferenceId="givenName" PartnerClaimType="given_name" />
+            <OutputClaim ClaimTypeReferenceId="surname" PartnerClaimType="family_name" />
+            <OutputClaim ClaimTypeReferenceId="email" PartnerClaimType="email" />
+            <OutputClaim ClaimTypeReferenceId="displayName" PartnerClaimType="name" />
+            <OutputClaim ClaimTypeReferenceId="identityProvider" DefaultValue="adfs.identity.mistermik.com" />
+            <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" />
+            <OutputClaim ClaimTypeReferenceId="identityProviderAccessToken" PartnerClaimType="{oauth2:access_token}" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
+            <OutputClaimsTransformation ReferenceId="CreateUserPrincipalName" />
+            <OutputClaimsTransformation ReferenceId="CreateAlternativeSecurityId" />
+            <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Saml-idp" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <!-- DataWiza Common AAD-->
+    <ClaimsProvider>
+      <Domain>AzureAD DataWiza</Domain>
+      <DisplayName>DataWiza CommonAD</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="DataWiza-AADCommon-OpenIdConnect">
+          <DisplayName>DataWiza AzureAD MultiTenant</DisplayName>
+          <Description>Login with your AzureAD account</Description>
+          <Protocol Name="OpenIdConnect" />
+          <Metadata>
+            <Item Key="METADATA">https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration</Item>
+            <!-- Update the Client ID below to the Application ID -->
+            <Item Key="client_id">60652a04-7342-4e16-b0db-0b4cfe36c2b6</Item>
+            <Item Key="response_types">code</Item>
+            <Item Key="scope">openid profile email</Item>
+            <Item Key="response_mode">form_post</Item>
+            <Item Key="HttpBinding">POST</Item>
+            <Item Key="UsePolicyInRedirectUri">false</Item>
+            <Item Key="DiscoverMetadataByTokenIssuer">true</Item>
             <!-- trying to add additional claim-->
             <!--Insert b2c-extensions-app application ID here, for example: 11111111-1111-1111-1111-111111111111-->
             <Item Key="02427953-f9a6-4700-9a8f-35f53cf42440"></Item>
@@ -322,7 +479,6 @@
           </Metadata>
           <CryptographicKeys>
             <Key Id="client_secret" StorageReferenceId="B2C_1A_AzureADMultiTenant" />
-            <Key Id="assertion_signing_key" StorageReferenceId="B2C_1A_B2CRSA1"/>
           </CryptographicKeys>
           <OutputClaims>
             <OutputClaim ClaimTypeReferenceId="issuerUserId" PartnerClaimType="oid" />
@@ -333,6 +489,8 @@
             <OutputClaim ClaimTypeReferenceId="authenticationSource" DefaultValue="socialIdpAuthentication" AlwaysUseDefaultValue="true" />
             <OutputClaim ClaimTypeReferenceId="identityProvider" PartnerClaimType="iss" />
             <OutputClaim ClaimTypeReferenceId="city" />
+            <OutputClaim ClaimTypeReferenceId="email" />
+            <OutputClaim ClaimTypeReferenceId="identityProviderAccessToken" PartnerClaimType="{oauth2:access_token}" />
           </OutputClaims>
           <OutputClaimsTransformations>
             <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName" />
@@ -341,6 +499,19 @@
             <OutputClaimsTransformation ReferenceId="CreateSubjectClaimFromAlternativeSecurityId" />
           </OutputClaimsTransformations>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-SocialLogin" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Session Management</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="SM-Saml-idp">
+          <DisplayName>Session Management Provider</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.SSO.SamlSSOSessionProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="IncludeSessionIndex">false</Item>
+            <Item Key="RegisterServiceProviders">false</Item>
+          </Metadata>
         </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>
@@ -356,9 +527,11 @@
         <OrchestrationStep Order="2" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
           <ClaimsProviderSelections>
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange" />
-            <!--<ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" /> -->
+            <ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" />
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange-PKCE" />
             <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange-RSA" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="ADFSExchange" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="AADExchange-DataWiza" />
             <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
           </ClaimsProviderSelections>
           <ClaimsExchanges>
@@ -377,6 +550,8 @@
             <ClaimsExchange Id="AADExchange" TechnicalProfileReferenceId="AADCommon-OpenIdConnect" />
             <ClaimsExchange Id="AADExchange-PKCE" TechnicalProfileReferenceId="AADCommon-OpenIdConnect-PKCE" />
             <ClaimsExchange Id="AADExchange-RSA" TechnicalProfileReferenceId="AADCommon-OpenIdConnect-RSA" />
+            <ClaimsExchange Id="ADFSExchange" TechnicalProfileReferenceId="ADFSIdentity-SAML2" />
+            <ClaimsExchange Id="AADExchange-DataWiza" TechnicalProfileReferenceId="DataWiza-AADCommon-OpenIdConnect" />
             <ClaimsExchange Id="FacebookExchange" TechnicalProfileReferenceId="Facebook-OAUTH" />
             <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
           </ClaimsExchanges>
