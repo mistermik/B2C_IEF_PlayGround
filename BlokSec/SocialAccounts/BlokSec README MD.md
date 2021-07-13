@@ -57,9 +57,9 @@ TABLE 2
 |---------|---------|
 |Name         |Azure AD B2C/your desired application name.|
 |SSO Type         |OpenID Connect (OIDC).|
-|Logo URI     |[https://bloksec.io/assets/AzureB2C.png/](https://bloksec.io/assets/AzureB2C.png/) a link to the image of your choice|
+|Logo URI     |[https://bloksec.io/assets/AzureB2C.png](https://bloksec.io/assets/AzureB2C.png/) a link to the image of your choice|
 |Redirect URIs     |https://**your-B2C-tenant-name**.b2clogin.com/**your-B2C-tenant-name**.onmicrosoft.com/oauth2/authresp<BR>**For Example**: [https://fabrikam.b2clogin.com/fabrikam.onmicrosoft.com/oauth2/authresp](https://fabrikam.b2clogin.com/fabrikam.onmicrosoft.com/oauth2/authresp) <BR><BR>If you use a custom domain, enter  https://**your-domain-name**/**your-tenant-name**.onmicrosoft.com/oauth2/authresp. <BR>Replace your-domain-name with your custom domain, and your-tenant-name with the name of your tenant.         |
-|Post log out redirect URIs     |https://**your-B2C-tenant-name**.b2clogin.com/**your-B2C-tenant-name**.onmicrosoft.com/**{policy}**/oauth2/v2.0/logout <BR>[https://docs.microsoft.com/en-us/azure/active-directory-b2c/openid-connect#send-a-sign-out-request](https://docs.microsoft.com/azure/active-directory-b2c/openid-connect#send-a-sign-out-request)        |
+|Post log out redirect URIs     |https://**your-B2C-tenant-name**.b2clogin.com/**your-B2C-tenant-name**.onmicrosoft.com/**{policy}**/oauth2/v2.0/logout?post_logout_redirect_uri=https%3A%2F%2Fjwt.ms%2F <BR>[https://docs.microsoft.com/en-us/azure/active-directory-b2c/openid-connect#send-a-sign-out-request](https://docs.microsoft.com/azure/active-directory-b2c/openid-connect#send-a-sign-out-request)        |
 
 -  Once saved, select the newly created Azure AD B2C application to open the application configuration
 Select **Generate App Secret**  
@@ -219,7 +219,7 @@ You can define BlokSec as a claims provider by adding it to the **ClaimsProvider
 At this point, the identity provider has been set up, but it's not yet available in any of the sign-in pages. If you don't have your own custom user journey, create a duplicate of an existing template user journey, otherwise continue to the next step.  
 
 1.  Open the *TrustFrameworkBase.xml* file from the starter pack.
-2.  Find and copy the entire contents of the **UserJourneys**element that includes Id="SignUpOrSignIn".
+2.  Find and copy the entire contents of the **UserJourneys** element that includes Id="SignUpOrSignIn".
 3.  Open the TrustFrameworkExtensions.xml and find the **UserJourneys** element. If the element doesn't exist, add one.
 4.  Paste the entire content of the **UserJourney** element that you copied as a child of the **UserJourneys** element.
 5.  Rename the Id of the user journey. For example,  Id="CustomSignUpSignIn".  
