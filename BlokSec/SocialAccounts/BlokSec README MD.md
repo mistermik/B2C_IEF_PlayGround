@@ -136,6 +136,12 @@ Enter the account name registered during User registration. The user will receiv
 
 ::: zone pivot="b2c-custom-policy"
 
+> [!NOTE]
+> In Azure Active Directory B2C, [**custom policies**](https://docs.microsoft.com/azure/active-directory-b2c/user-flow-overview) are designed primarily to address complex scenarios. For most scenarios, we recommend that you use built-in [**user flows**](https://docs.microsoft.com/azure/active-directory-b2c/user-flow-overview).
+
+> [!IMPORTANT]
+> Complete the steps in the [**Get started with custom policies in Active Directory B2C**](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
+
 ### Part - 2 Create a policy key
 
 You need to store the client secret that you previously recorded in your Azure AD B2C tenant.
