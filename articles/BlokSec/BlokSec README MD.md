@@ -1,5 +1,5 @@
 ---
-zone_pivot_group_filename: zone-pivot-groups.json
+zone_pivot_groups: b2c-policy-type
 ---
 # Integrate BlockSec with Azure AD B2C using Custom Policies
 
