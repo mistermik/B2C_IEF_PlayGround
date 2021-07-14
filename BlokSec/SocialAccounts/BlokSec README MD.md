@@ -1,8 +1,10 @@
 # Integrate BlockSec with Azure AD B2C using Custom Policies
 
+[!INCLUDE [active-directory-b2c-choose-user-flow-or-custom-policy](../../includes/active-directory-b2c-choose-user-flow-or-custom-policy.md)]
+
 ::: zone pivot="b2c-custom-policy"
 
-[!INCLUDE [active-directory-b2c-advanced-audience-warning](../../includes/active-directory-b2c-advanced-audience-warning.md)]
+[!INCLUDE active-directory-b2c-advanced-audience-warning]
 
 ::: zone-end
 
