@@ -1,6 +1,20 @@
 ---
+title: Multi-Factor Authentication in Azure Active Directory B2C | Microsoft Docs
+description: How to enable Multi-Factor Authentication in consumer-facing applications secured by Azure Active Directory B2C.
+services: active-directory-b2c
+author: msmimart
+manager: celestedg
+
+ms.service: active-directory
+ms.workload: identity
+ms.topic: how-to
+ms.date: 05/13/2021
+ms.custom: project-no-code
+ms.author: mimart
+ms.subservice: B2C
 zone_pivot_groups: b2c-policy-type
 ---
+
 # Integrate BlockSec with Azure AD B2C using Custom Policies
 
 [!INCLUDE [active-directory-b2c-choose-user-flow-or-custom-policy](../../includes/active-directory-b2c-choose-user-flow-or-custom-policy.md)]
