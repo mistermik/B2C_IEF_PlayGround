@@ -18,6 +18,7 @@ zone_pivot_groups: b2c-policy-type
 # Integrate BlockSec with Azure AD B2C using Custom Policies
 
 ::: zone pivot="b2c-custom-policy"
+
 [!INCLUDE [active-directory-b2c-choose-user-flow-or-custom-policy](../../includes/active-directory-b2c-choose-user-flow-or-custom-policy.md)]
 
 ::: zone-end
