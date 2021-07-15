@@ -34,7 +34,7 @@ BlokSec integration includes the following components:
 
 
 The following architecture diagram shows the implementation.
-[![BlokSec integration diagram](../../includes/BlokSec_Diag_img.png)]()
+[![BlokSec integration diagram](../includes/BlokSec_Diag_img.png)]()
 
 
 TABLE 1
