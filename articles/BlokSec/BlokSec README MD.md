@@ -17,7 +17,7 @@ zone_pivot_groups: b2c-policy-type
 
 # Integrate BlockSec with Azure AD B2C using Custom Policies
 
-[!INCLUDE [active-directory-b2c-choose-user-flow-or-custom-policy](../../includes/active-directory-b2c-choose-user-flow-or-custom-policy.md)]
+[!INCLUDE [active-directory-b2c-choose-user-flow-or-custom-policy](../includes/active-directory-b2c-choose-user-flow-or-custom-policy.md)]
 
 
 ## Tutorial: Configure Azure Active Directory B2C with BlokSec for Passwordless authentication
