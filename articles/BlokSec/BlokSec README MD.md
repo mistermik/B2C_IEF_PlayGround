@@ -21,7 +21,7 @@ zone_pivot_groups: b2c-policy-type
 
 ::: zone pivot="b2c-custom-policy"
 
-[!INCLUDE active-directory-b2c-advanced-audience-warning]
+TEST
 
 ::: zone-end
 
