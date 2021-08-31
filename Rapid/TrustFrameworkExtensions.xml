@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="identityb2c.onmicrosoft.com" PolicyId="B2C_1A_Rest_TrustFrameworkExtensions" PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_Rest_TrustFrameworkExtensions">
+
+  <BasePolicy>
+    <TenantId>identityb2c.onmicrosoft.com</TenantId>
+    <PolicyId>B2C_1A_Rest_trustFrameworkBase</PolicyId>
+  </BasePolicy>
+  <BuildingBlocks>
+    <ClaimsSchema>
+      <!--Demo: Custom claims use in the solution -->
+      <ClaimType Id="house">
+        <DisplayName>House</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>The house string returned from the REST API</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="rate">
+        <DisplayName>Rate</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>The rate string returned from the REST API</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="color">
+        <DisplayName>color number</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>The color string returned from the REST API</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="random_field">
+        <DisplayName>Random field</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>The Random Value number returned from the REST API</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="requestBody">
+        <DisplayName>custom_payload_claim</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>custom_payload_claim</UserHelpText>
+      </ClaimType>
+    </ClaimsSchema>
+    <ClaimsTransformations>
+    <ClaimsTransformation Id="GenerateRequestBody" TransformationMethod="GenerateJson">
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="house" TransformationClaimType="house" />
+        <InputClaim ClaimTypeReferenceId="rate" TransformationClaimType="rate" />
+        <InputClaim ClaimTypeReferenceId="color" TransformationClaimType="color" />
+        <InputClaim ClaimTypeReferenceId="random_field" TransformationClaimType="random_field" />
+      </InputClaims>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="requestBody" TransformationClaimType="outputClaim"/>
+      </OutputClaims>
+    </ClaimsTransformation>
+  </ClaimsTransformations>
+  </BuildingBlocks>
+
+  <ClaimsProviders>
+
+
+    <ClaimsProvider>
+      <DisplayName>Local Account SignIn</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="login-NonInteractive">
+          <Metadata>
+            <Item Key="client_id">3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de</Item>
+            <Item Key="IdTokenAudience">6937dff8-3347-4e3e-ab14-8727c205f803</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="6937dff8-3347-4e3e-ab14-8727c205f803" />
+          </InputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>REST APIs</DisplayName>
+      <TechnicalProfiles>
+        <!--Demo: this technical profile returns the loyalty number -->
+        <TechnicalProfile Id="REST-GetClaims">
+          <DisplayName>Validate user input data and return claims</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ServiceUrl">https://b2crestapirapid.azurewebsites.net/api/identity/loyalty</Item>
+            <Item Key="AuthenticationType">None</Item>
+            <Item Key="SendClaimsIn">Body</Item>
+            <Item Key="AllowInsecureAuthInProduction">true</Item>
+          </Metadata>
+          <InputClaims>
+            <!--Demo: optional claims to be sent to the REST API-->
+            <InputClaim ClaimTypeReferenceId="objectId" />
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="house" />
+            <OutputClaim ClaimTypeReferenceId="rate" />
+            <OutputClaim ClaimTypeReferenceId="color" />
+            <OutputClaim ClaimTypeReferenceId="random_field" />
+            <OutputClaim ClaimTypeReferenceId="requestBody"/>
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="GenerateRequestBody" />
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  </ClaimsProviders>
+
+  <UserJourneys>
+    <UserJourney Id="Rest-SignUpOrSignIn">
+      <OrchestrationSteps>
+
+        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
+          </ClaimsProviderSelections>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>objectId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- This step reads any user attributes that we may not have received when in the token. -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserReadWithObjectId" TechnicalProfileReferenceId="AAD-UserReadUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <!--Demo: This step get the claims from REST API call -->
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="REST-GetClaims" TechnicalProfileReferenceId="REST-GetClaims" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="5" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+
+      </OrchestrationSteps>
+      <ClientDefinition ReferenceId="DefaultWeb" />
+    </UserJourney>
+
+  </UserJourneys>
+
+</TrustFrameworkPolicy>
