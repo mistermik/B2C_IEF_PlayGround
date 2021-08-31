@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="identityb2c.onmicrosoft.com" PolicyId="B2C_1A_Rest_TrustFrameworkExtensions" PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_Rest_TrustFrameworkExtensions">
+<?xml version="1.0" encoding="utf-8"?>
+<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="your-tenant.onmicrosoft.com" PolicyId="B2C_1A_Rest_TrustFrameworkExtensions" PublicPolicyUri="http://your-tenant.onmicrosoft.com/B2C_1A_Rest_TrustFrameworkExtensions">
 
   <BasePolicy>
-    <TenantId>identityb2c.onmicrosoft.com</TenantId>
+    <TenantId>your-tenant.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_Rest_trustFrameworkBase</PolicyId>
   </BasePolicy>
   <BuildingBlocks>
@@ -57,12 +57,12 @@
       <TechnicalProfiles>
         <TechnicalProfile Id="login-NonInteractive">
           <Metadata>
-            <Item Key="client_id">3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de</Item>
-            <Item Key="IdTokenAudience">6937dff8-3347-4e3e-ab14-8727c205f803</Item>
+            <Item Key="client_id">ProxyIdentityExperienceFrameworkAppId</Item>
+            <Item Key="IdTokenAudience">IdentityExperienceFrameworkAppId</Item>
           </Metadata>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de" />
-            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="6937dff8-3347-4e3e-ab14-8727c205f803" />
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="ProxyIdentityExperienceFrameworkAppId" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="IdentityExperienceFrameworkAppId" />
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
