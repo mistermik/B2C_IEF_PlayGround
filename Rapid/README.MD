@@ -1,34 +1,50 @@
-# REST API Call and JSON claims transformations
-https://docs.microsoft.com/en-us/azure/active-directory-b2c/json-transformations#generatejson
+# REST API Custom Integration with B2C Custom Policy
 
-**Example of id_token returned by B2C**
+****REST API call output:
+```
+{
+    "version": "1.0.0.0",
+    "status": 200,
+    "userMessage": "",
+     "custom_payload": [
+        "Condos",
+        "PayAsYouGo",
+        "Orange",
+        "1825"
+    ],
+    "allowedToLogin": true,
+    "enforceMFA": false,
+    "forceChangePassword": false
+}
+
+**Example of id_token returned by B2C to the RP**
 ```
 {
   "typ": "JWT",
   "alg": "RS256",
-  "kid": "RvTebkQvD5wco5L0mFixX1Po33OAgVmLrin5zk80JE8"
+  "kid": "XXXXX"
 }.{
-  "exp": 1630384039,
-  "nbf": 1630380439,
+  "exp": 1630459342,
+  "nbf": 1630455742,
   "ver": "1.0",
-  "iss": "https://xxxxxxx.b2clogin.com//v2.0/",
-  "sub": "xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx",
-  "aud": "xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx",
+  "iss": "https://XXXXX.b2clogin.com/XXXXX-XXXXX-XXXXX-XXXXX-XXXXX/v2.0/",
+  "sub": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+  "aud": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
   "acr": "b2c_1a_rest_signup_signin",
   "nonce": "defaultNonce",
-  "iat": 1630380439,
-  "auth_time": 1630380439,
+  "iat": 1630455742,
+  "auth_time": 1630455742,
   "name": "Mister Mik",
   "given_name": "Mister",
   "family_name": "Mik",
-  "house": "Single",
-  "rate": "Monthly",
-  "color": "White",
-  "random_field": "5576",
-  "custom_payload_claim" :{ 
-       "house":"Single",
-			 "rate":"Monthly",
-			 "color":"White",
-			 "random_field":"5576"}
-  "tid": "xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx-xxxxxxx"
+  "allowedToLogin": true,
+  "enforceMFA": false,
+  "forceChangePassword": false,
+  "custom_payload": [
+    "Condos",
+    "PayAsYouGo",
+    "Brown",
+    "4697"
+  ],
+  "tid": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 }.[Signature]
