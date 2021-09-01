@@ -1,6 +1,6 @@
 # REST API Custom Integration with B2C Custom Policy
 
-****REST API call output:
+**REST API call output:**
 ```
 {
     "version": "1.0.0.0",
