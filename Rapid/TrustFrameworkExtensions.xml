@@ -5,7 +5,7 @@
     <TenantId>your-tenant.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_Rest_trustFrameworkBase</PolicyId>
   </BasePolicy>
-  <BuildingBlocks>
+ <BuildingBlocks>
     <ClaimsSchema>
       <!--Demo: Custom claims use in the solution -->
       <ClaimType Id="house">
@@ -28,25 +28,28 @@
         <DataType>string</DataType>
         <UserHelpText>The Random Value number returned from the REST API</UserHelpText>
       </ClaimType>
-      <ClaimType Id="requestBody">
-        <DisplayName>custom_payload_claim</DisplayName>
-        <DataType>string</DataType>
-        <UserHelpText>custom_payload_claim</UserHelpText>
+      <ClaimType Id="custom_payload">
+        <DisplayName>custom_payload</DisplayName>
+        <DataType>stringCollection</DataType>
+        <UserHelpText>custom_payload</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="allowedToLogin">
+        <DisplayName>allowedToLogin</DisplayName>
+        <DataType>boolean</DataType>
+        <UserHelpText>allowedToLogin</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="enforceMFA">
+        <DisplayName>enforceMFA</DisplayName>
+        <DataType>boolean</DataType>
+        <UserHelpText>enforceMFA</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="forceChangePassword">
+        <DisplayName>forceChangePassword</DisplayName>
+        <DataType>boolean</DataType>
+        <UserHelpText>forceChangePassword</UserHelpText>
       </ClaimType>
     </ClaimsSchema>
-    <ClaimsTransformations>
-    <ClaimsTransformation Id="GenerateRequestBody" TransformationMethod="GenerateJson">
-      <InputClaims>
-        <InputClaim ClaimTypeReferenceId="house" TransformationClaimType="house" />
-        <InputClaim ClaimTypeReferenceId="rate" TransformationClaimType="rate" />
-        <InputClaim ClaimTypeReferenceId="color" TransformationClaimType="color" />
-        <InputClaim ClaimTypeReferenceId="random_field" TransformationClaimType="random_field" />
-      </InputClaims>
-      <OutputClaims>
-        <OutputClaim ClaimTypeReferenceId="requestBody" TransformationClaimType="outputClaim"/>
-      </OutputClaims>
-    </ClaimsTransformation>
-  </ClaimsTransformations>
+    <ClaimsTransformations></ClaimsTransformations>
   </BuildingBlocks>
 
   <ClaimsProviders>
@@ -57,12 +60,12 @@
       <TechnicalProfiles>
         <TechnicalProfile Id="login-NonInteractive">
           <Metadata>
-            <Item Key="client_id">ProxyIdentityExperienceFrameworkAppId</Item>
-            <Item Key="IdTokenAudience">IdentityExperienceFrameworkAppId</Item>
+            <Item Key="client_id">3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de</Item>
+            <Item Key="IdTokenAudience">6937dff8-3347-4e3e-ab14-8727c205f803</Item>
           </Metadata>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="ProxyIdentityExperienceFrameworkAppId" />
-            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="IdentityExperienceFrameworkAppId" />
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="6937dff8-3347-4e3e-ab14-8727c205f803" />
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
@@ -85,15 +88,12 @@
             <InputClaim ClaimTypeReferenceId="objectId" />
           </InputClaims>
           <OutputClaims>
-            <OutputClaim ClaimTypeReferenceId="house" />
-            <OutputClaim ClaimTypeReferenceId="rate" />
-            <OutputClaim ClaimTypeReferenceId="color" />
-            <OutputClaim ClaimTypeReferenceId="random_field" />
-            <OutputClaim ClaimTypeReferenceId="requestBody"/>
+            <OutputClaim ClaimTypeReferenceId="allowedToLogin" />
+            <OutputClaim ClaimTypeReferenceId="enforceMFA" />
+            <OutputClaim ClaimTypeReferenceId="allowedToLogin" />
+            <OutputClaim ClaimTypeReferenceId="forceChangePassword" />
+            <OutputClaim ClaimTypeReferenceId="custom_payload" />
           </OutputClaims>
-          <OutputClaimsTransformations>
-            <OutputClaimsTransformation ReferenceId="GenerateRequestBody" />
-          </OutputClaimsTransformations>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
         </TechnicalProfile>
       </TechnicalProfiles>
