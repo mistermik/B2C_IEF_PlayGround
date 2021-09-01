@@ -16,8 +16,10 @@
     "enforceMFA": false,
     "forceChangePassword": false
 }
+```
 
 **Example of id_token returned by B2C to the RP**
+
 ```
 {
   "typ": "JWT",
@@ -48,3 +50,4 @@
   ],
   "tid": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 }.[Signature]
+```
