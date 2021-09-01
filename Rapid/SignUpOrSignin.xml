@@ -8,6 +8,10 @@
 
   <RelyingParty>
     <DefaultUserJourney ReferenceId="Rest-SignUpOrSignIn" />
+    <UserJourneyBehaviors>
+      <JourneyInsights TelemetryEngine="ApplicationInsights" InstrumentationKey="76fbe1b0-f5da-495d-ad9f-c9bd97ba1378" DeveloperMode="true" ClientEnabled="false" ServerEnabled="true" TelemetryVersion="1.0.0" />
+      <JourneyFraming Enabled="true" Sources="https://some--site.com https://anothersite.com" />
+    </UserJourneyBehaviors>
     <TechnicalProfile Id="PolicyProfile">
       <DisplayName>PolicyProfile</DisplayName>
       <Protocol Name="OpenIdConnect" />
@@ -18,12 +22,11 @@
         <OutputClaim ClaimTypeReferenceId="email" />
         <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="sub" />
         <OutputClaim ClaimTypeReferenceId="tenantId" AlwaysUseDefaultValue="true" DefaultValue="{Policy:TenantObjectId}" />
-        <OutputClaim ClaimTypeReferenceId="house" />
-        <OutputClaim ClaimTypeReferenceId="rate" />
-        <OutputClaim ClaimTypeReferenceId="color" />
-        <OutputClaim ClaimTypeReferenceId="random_field" />
-        <OutputClaim ClaimTypeReferenceId="requestBody" PartnerClaimType="custom_payload_claim"/>
-
+        <OutputClaim ClaimTypeReferenceId="allowedToLogin" />
+        <OutputClaim ClaimTypeReferenceId="enforceMFA" />
+        <OutputClaim ClaimTypeReferenceId="allowedToLogin" />
+        <OutputClaim ClaimTypeReferenceId="forceChangePassword" />
+        <OutputClaim ClaimTypeReferenceId="custom_payload" />
       </OutputClaims>
       <SubjectNamingInfo ClaimType="sub" />
     </TechnicalProfile>
