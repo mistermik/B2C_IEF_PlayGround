@@ -8,10 +8,7 @@
 
   <RelyingParty>
     <DefaultUserJourney ReferenceId="Rest-SignUpOrSignIn" />
-    <UserJourneyBehaviors>
-      <JourneyInsights TelemetryEngine="ApplicationInsights" InstrumentationKey="76fbe1b0-f5da-495d-ad9f-c9bd97ba1378" DeveloperMode="true" ClientEnabled="false" ServerEnabled="true" TelemetryVersion="1.0.0" />
-      <JourneyFraming Enabled="true" Sources="https://some--site.com https://anothersite.com" />
-    </UserJourneyBehaviors>
+  
     <TechnicalProfile Id="PolicyProfile">
       <DisplayName>PolicyProfile</DisplayName>
       <Protocol Name="OpenIdConnect" />
