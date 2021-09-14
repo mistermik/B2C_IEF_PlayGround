@@ -165,8 +165,8 @@
           <DisplayName>Validate user input data and return claims</DisplayName>
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
           <Metadata>
-            <!-- <Item Key="ServiceUrl">https://b2crestapirapid.azurewebsites.net/api/identity/loyalty</Item> -->
-            <Item Key="ServiceUrl">https://5abb-2601-648-8300-cec0-3922-c949-17e-4b13.ngrok.io/api/identity/loyalty</Item>
+            <Item Key="ServiceUrl">https://b2crestapirapid.azurewebsites.net/api/identity/loyalty</Item>
+            <!-- <Item Key="ServiceUrl">https://5abb-2601-648-8300-cec0-3922-c949-17e-4b13.ngrok.io/api/identity/loyalty</Item> -->
             <Item Key="AuthenticationType">None</Item>
             <Item Key="SendClaimsIn">Body</Item>
             <Item Key="AllowInsecureAuthInProduction">true</Item>
