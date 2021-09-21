@@ -4,12 +4,12 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06"
   PolicySchemaVersion="0.3.0.0"
-  TenantId="identityb2c.onmicrosoft.com"
+  TenantId="YOUR-TENANT.onmicrosoft.com"
   PolicyId="B2C_1A_Rest_ProfileEdit"
-  PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_Rest_ProfileEdit">
+  PublicPolicyUri="http://YOUR-TENANT.onmicrosoft.com/B2C_1A_Rest_ProfileEdit">
 
   <BasePolicy>
-    <TenantId>identityb2c.onmicrosoft.com</TenantId>
+    <TenantId>YOUR-TENANT.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_Rest_TrustFrameworkExtensions</PolicyId>
   </BasePolicy>
 
