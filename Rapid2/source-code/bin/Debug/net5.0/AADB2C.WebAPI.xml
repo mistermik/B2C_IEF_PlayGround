@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AADB2C.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:AADB2C.WebAPI.Controllers.IdentityController.Loyalty(AADB2C.WebAPI.Models.InputClaimsModel)">
+             <summary>
+             Generates Random Claims.
+             </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /api/Identity/Loyalty
+                 {
+                    "objectId" : "972vf6b1-2a74-4045-aadc-77d2f4c40611"
+                 }
+            
+             </remarks>
+             <param name="inputClaims">Required parameter ObjectId: Example: </param>
+             <response code="200">Returns the newly created claims</response>
+             <response code="409">If the item is null</response> 
+        </member>
+        <member name="P:AADB2C.WebAPI.Models.InputClaimsModel.objectId">
+            <summary>The unique identifier</summary>
+        </member>
+    </members>
+</doc>
