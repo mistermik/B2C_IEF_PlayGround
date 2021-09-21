@@ -1,0 +1,15 @@
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\appsettings.Development.json
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\appsettings.json
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\AADB2C.WebAPI.deps.json
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\AADB2C.WebAPI.runtimeconfig.json
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\AADB2C.WebAPI.runtimeconfig.dev.json
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\AADB2C.WebAPI.dll
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\bin\Release\netcoreapp2.1\AADB2C.WebAPI.pdb
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.csproj.AssemblyReference.cache
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.AssemblyInfoInputs.cache
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.AssemblyInfo.cs
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.csproj.CoreCompileInputs.cache
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.dll
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.pdb
+C:\Users\mferrari\Source\repos\B2C\REST-API\source-code\dot-net-core-2.1\AADB2C.WebAPI\obj\Release\netcoreapp2.1\AADB2C.WebAPI.genruntimeconfig.cache
