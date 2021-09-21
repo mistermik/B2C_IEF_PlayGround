@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="identityb2c.onmicrosoft.com" PolicyId="B2C_1A_Rest_TrustFrameworkExtensions" PublicPolicyUri="http://identityb2c.onmicrosoft.com/B2C_1A_Rest_TrustFrameworkExtensions">
+<TrustFrameworkPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" PolicySchemaVersion="0.3.0.0" TenantId="
+.onmicrosoft.com" PolicyId="B2C_1A_Rest_TrustFrameworkExtensions" PublicPolicyUri="http://YOUR-TENANT.onmicrosoft.com/B2C_1A_Rest_TrustFrameworkExtensions">
 
   <BasePolicy>
-    <TenantId>identityb2c.onmicrosoft.com</TenantId>
+    <TenantId>YOUR-TENANT.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_Rest_TrustFrameworkBase</PolicyId>
   </BasePolicy>
   <BuildingBlocks>
@@ -37,6 +38,11 @@
         <DisplayName>allowedToLogin</DisplayName>
         <DataType>boolean</DataType>
         <UserHelpText>allowedToLogin</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="roles">
+        <DisplayName>roles</DisplayName>
+        <DataType>stringCollection</DataType>
+        <UserHelpText>roles</UserHelpText>
       </ClaimType>
       <ClaimType Id="responseMsg">
         <DisplayName></DisplayName>
@@ -94,6 +100,14 @@
           <OutputClaim ClaimTypeReferenceId="readOnlyEmail" TransformationClaimType="outputClaim" />
         </OutputClaims>
       </ClaimsTransformation>
+      <ClaimsTransformation Id="ModifyDisplayName" TransformationMethod="CreateStringClaim">
+        <InputParameters>
+          <InputParameter Id="value" DataType="string" Value="mfa=false pwdreset=false AllowedToLogin=true" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="displayName" TransformationClaimType="createdClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
     </ClaimsTransformations>
     <ContentDefinitions>
       <ContentDefinition Id="api.selfasserted.blockpage">
@@ -147,12 +161,12 @@
       <TechnicalProfiles>
         <TechnicalProfile Id="login-NonInteractive">
           <Metadata>
-            <Item Key="client_id">3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de</Item>
-            <Item Key="IdTokenAudience">6937dff8-3347-4e3e-ab14-8727c205f803</Item>
+            <Item Key="client_id">ProxyIdentityExperienceFrameworkAppId</Item>
+            <Item Key="IdTokenAudience">IdentityExperienceFrameworkAppId</Item>
           </Metadata>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="3b136fbc-ce13-4741-b2d1-ffeb9cbcb9de" />
-            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="6937dff8-3347-4e3e-ab14-8727c205f803" />
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="ProxyIdentityExperienceFrameworkAppId" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="IdentityExperienceFrameworkAppId" />
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
@@ -166,7 +180,6 @@
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
           <Metadata>
             <Item Key="ServiceUrl">https://b2crestapirapid.azurewebsites.net/api/identity/loyalty</Item>
-            <!-- <Item Key="ServiceUrl">https://5abb-2601-648-8300-cec0-3922-c949-17e-4b13.ngrok.io/api/identity/loyalty</Item> -->
             <Item Key="AuthenticationType">None</Item>
             <Item Key="SendClaimsIn">Body</Item>
             <Item Key="AllowInsecureAuthInProduction">true</Item>
@@ -193,8 +206,16 @@
           <Metadata>
             <Item Key="EnforceEmailVerification">false</Item>
           </Metadata>
+          <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="ModifyDisplayName" />
+          </InputClaimsTransformations>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="displayName" />
+            <InputClaim ClaimTypeReferenceId="email" />
+          </InputClaims>
           <OutputClaimsTransformations>
             <OutputClaimsTransformation ReferenceId="CopyEmailToReadOnly" />
+
           </OutputClaimsTransformations>
         </TechnicalProfile>
 
@@ -211,12 +232,12 @@
         <TechnicalProfile Id="AAD-Common">
           <Metadata>
             <!--Insert b2c-extensions-app application ID here, for example: 11111111-1111-1111-1111-111111111111-->
-            <Item Key="ClientId">02427953-f9a6-4700-9a8f-35f53cf42440</Item>
+            <Item Key="ClientId">11111111-1111-1111-1111-111111111111</Item>
             <!--Insert b2c-extensions-app application ObjectId here, for example: 22222222-2222-2222-2222-222222222222-->
-            <Item Key="ApplicationObjectId">69f7ed2b-781c-4c1a-96e1-63d9774fa9e3</Item>
+            <Item Key="ApplicationObjectId">22222222-2222-2222-2222-222222222222</Item>
           </Metadata>
         </TechnicalProfile>
-        <!-- If newUser claim exist, set enforceMFA=true to request MFA Registration on SignUp -->
+        <!-- Call MFA registration if it's a new user //If newUser claim exist, set enforceMFA=true to request MFA Registration on SignUp -->
         <TechnicalProfile Id="ClaimsTransformation-MFAonNewUser">
           <DisplayName>Enforce MFA on User Creation</DisplayName>
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
@@ -225,12 +246,6 @@
           </OutputClaims>
           <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
         </TechnicalProfile>
-      </TechnicalProfiles>
-    </ClaimsProvider>
-    <ClaimsProvider>
-      <DisplayName>Azure Active Directory</DisplayName>
-      <TechnicalProfiles>
-
         <TechnicalProfile Id="AAD-UserWriteMFAMethod">
           <Metadata>
             <Item Key="Operation">Write</Item>
@@ -307,13 +322,14 @@
             <Item Key="TokenLifeTimeInSeconds">3600</Item>
             <Item Key="AllowGenerationOfClaimsWithNullValues">true</Item>
             <Item Key="setting.showContinueButton">false</Item>
-            <Item Key="setting.showCancelButton">false</Item>
+            <Item Key="setting.showCancelButton">true</Item> <!-- improove message / contact admin etc -->
           </Metadata>
           <CryptographicKeys>
             <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
           </CryptographicKeys>
           <InputClaims>
             <InputClaim ClaimTypeReferenceId="responseMsg" DefaultValue="You are not permitted to access this application. AllowedToLogin = true." />
+            <!-- return error status from API -->
           </InputClaims>
           <OutputClaims>
             <OutputClaim ClaimTypeReferenceId="responseMsg" Required="true" />
@@ -322,24 +338,11 @@
         </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>
-
-    <ClaimsProvider>
-      <DisplayName>Facebook</DisplayName>
-      <TechnicalProfiles>
-        <TechnicalProfile Id="Facebook-OAUTH">
-          <Metadata>
-            <Item Key="client_id">163874059119101</Item>
-            <Item Key="scope">email public_profile</Item>
-            <Item Key="ClaimsEndpoint">https://graph.facebook.com/me?fields=id,first_name,last_name,name,email</Item>
-          </Metadata>
-        </TechnicalProfile>
-      </TechnicalProfiles>
-    </ClaimsProvider>
     <ClaimsProvider>
       <DisplayName>Self Asserted</DisplayName>
       <TechnicalProfiles>
 
-         <TechnicalProfile Id="SelfAsserted-ProfileUpdate">
+        <TechnicalProfile Id="SelfAsserted-ProfileUpdate">
           <DisplayName>User ID signup</DisplayName>
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
           <Metadata>
@@ -413,18 +416,12 @@
             <ClaimsExchange Id="REST-GetClaims" TechnicalProfileReferenceId="REST-GetClaims" />
           </ClaimsExchanges>
         </OrchestrationStep>
-        <OrchestrationStep Order="5" Type="ClaimsExchange">
-          <Preconditions>
-            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
-              <Value>newUser</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-          </Preconditions>
-          <ClaimsExchanges>
-            <ClaimsExchange Id="ClaimsTransformation-MFAonNewUser" TechnicalProfileReferenceId="ClaimsTransformation-MFAonNewUser" />
-          </ClaimsExchanges>
+        <!-- Invoke a Sub Journey for MFA to simplify the flow -->
+        <OrchestrationStep Order="5" Type="InvokeSubJourney">
+          <JourneyList>
+            <Candidate SubJourneyReferenceId="MFA_Evaluation" />
+          </JourneyList>
         </OrchestrationStep>
-
         <!-- If AllowedToLogin=false is returned by the previous step from the REST API, then we show a "you are blocked" error page -->
         <OrchestrationStep Order="6" Type="ClaimsExchange">
           <Preconditions>
@@ -439,87 +436,9 @@
           </ClaimsExchanges>
         </OrchestrationStep>
 
-        <OrchestrationStep Order="7" Type="ClaimsExchange">
-          <Preconditions>
-            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
-              <Value>extension_mfaByPhoneOrEmail</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-          </Preconditions>
-          <ClaimsExchanges>
-            <ClaimsExchange Id="SelfAsserted-Select-MFA-Method" TechnicalProfileReferenceId="SelfAsserted-Select-MFA-Method" />
-          </ClaimsExchanges>
-        </OrchestrationStep>
-
-        <!-- Phone verification: If MFA is not required, the next three steps (#5-#7) should be removed.
-             This step checks whether there's a phone number on record,  for the user. If found, then the user is challenged to verify it. -->
-        <OrchestrationStep Order="8" Type="ClaimsExchange">
-          <Preconditions>
-            <!-- Based on the param passed by the REST API, avoid MFA if enforceMFA returned false -->
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
-              <Value>enforceMFA</Value>
-              <Value>False</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
-              <Value>isActiveMFASession</Value>
-              <Value>true</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-            <!--Sample: If the preferred MFA method is not 'phone' skip this orchestration step-->
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
-              <Value>extension_mfaByPhoneOrEmail</Value>
-              <Value>phone</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-          </Preconditions>
-          <ClaimsExchanges>
-            <ClaimsExchange Id="PhoneFactor-Verify" TechnicalProfileReferenceId="PhoneFactor-InputOrVerify" />
-          </ClaimsExchanges>
-        </OrchestrationStep>
-
-        <!-- Save MFA phone number: The precondition verifies whether the user provided a new number in the 
-             previous step. If so, then the phone number is stored in the directory for future authentication 
-             requests. -->
-        <OrchestrationStep Order="9" Type="ClaimsExchange">
-          <Preconditions>
-            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
-              <Value>newPhoneNumberEntered</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-          </Preconditions>
-          <ClaimsExchanges>
-            <ClaimsExchange Id="AADUserWriteWithObjectId" TechnicalProfileReferenceId="AAD-UserWritePhoneNumberUsingObjectId" />
-          </ClaimsExchanges>
-        </OrchestrationStep>
-
-        <!--Sample: MFA with email-->
-        <OrchestrationStep Order="10" Type="ClaimsExchange">
-          <Preconditions>
-            <!-- Based on the param passed by the REST API, avoid MFA if enforceMFA returned false -->
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
-              <Value>enforceMFA</Value>
-              <Value>False</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
-              <Value>isActiveMFASession</Value>
-              <Value>true</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
-              <Value>extension_mfaByPhoneOrEmail</Value>
-              <Value>email</Value>
-              <Action>SkipThisOrchestrationStep</Action>
-            </Precondition>
-          </Preconditions>
-          <ClaimsExchanges>
-            <ClaimsExchange Id="Email-Verify" TechnicalProfileReferenceId="EmailVerifyOnSignIn" />
-          </ClaimsExchanges>
-        </OrchestrationStep>
 
         <!--Demo: check if change password is required. If yes, ask the user to reset the password-->
-        <OrchestrationStep Order="11" Type="ClaimsExchange">
+        <OrchestrationStep Order="7" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
               <Value>authenticationSource</Value>
@@ -540,15 +459,12 @@
             <ClaimsExchange Id="NewCredentials" TechnicalProfileReferenceId="LocalAccountWritePasswordUsingObjectId" />
           </ClaimsExchanges>
         </OrchestrationStep>
-
-        <OrchestrationStep Order="12" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
-
+        <OrchestrationStep Order="8" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
       </OrchestrationSteps>
       <ClientDefinition ReferenceId="DefaultWeb" />
     </UserJourney>
     <UserJourney Id="RestProfileEdit">
       <OrchestrationSteps>
-
         <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
           <ClaimsProviderSelections>
             <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
@@ -557,7 +473,6 @@
             <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
           </ClaimsExchanges>
         </OrchestrationStep>
-
         <OrchestrationStep Order="2" Type="ClaimsExchange">
           <Preconditions>
             <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
@@ -598,5 +513,100 @@
       <ClientDefinition ReferenceId="DefaultWeb" />
     </UserJourney>
   </UserJourneys>
+  <SubJourneys>
+    <SubJourney Id="MFA_Evaluation" Type="Call">
+      <OrchestrationSteps>
+        <!-- Enforce MFA Registration for new User/ SignUp -->
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>newUser</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="ClaimsTransformation-MFAonNewUser" TechnicalProfileReferenceId="ClaimsTransformation-MFAonNewUser" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>extension_mfaByPhoneOrEmail</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SelfAsserted-Select-MFA-Method" TechnicalProfileReferenceId="SelfAsserted-Select-MFA-Method" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
 
+        <!-- Phone verification: If MFA is not required, the next three steps (#5-#7) should be removed.
+           This step checks whether there's a phone number on record,  for the user. If found, then the user is challenged to verify it. -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <!-- Based on the param passed by the REST API, avoid MFA if enforceMFA returned false -->
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>enforceMFA</Value>
+              <Value>False</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>isActiveMFASession</Value>
+              <Value>true</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <!--Sample: If the preferred MFA method is not 'phone' skip this orchestration step-->
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+              <Value>extension_mfaByPhoneOrEmail</Value>
+              <Value>phone</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="PhoneFactor-Verify" TechnicalProfileReferenceId="PhoneFactor-InputOrVerify" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Save MFA phone number: The precondition verifies whether the user provided a new number in the 
+           previous step. If so, then the phone number is stored in the directory for future authentication 
+           requests. -->
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>newPhoneNumberEntered</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserWriteWithObjectId" TechnicalProfileReferenceId="AAD-UserWritePhoneNumberUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!--Sample: MFA with email-->
+        <OrchestrationStep Order="5" Type="ClaimsExchange">
+          <Preconditions>
+            <!-- Based on the param passed by the REST API, avoid MFA if enforceMFA returned false -->
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>enforceMFA</Value>
+              <Value>False</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>isActiveMFASession</Value>
+              <Value>true</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+              <Value>extension_mfaByPhoneOrEmail</Value>
+              <Value>email</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="Email-Verify" TechnicalProfileReferenceId="EmailVerifyOnSignIn" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+  </SubJourneys>
 </TrustFrameworkPolicy>
