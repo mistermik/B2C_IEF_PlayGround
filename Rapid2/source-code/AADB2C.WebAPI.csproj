@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\WeatherForecastController.cs" />
-    <Compile Remove="Startup - Backup.cs" />
   </ItemGroup>
 
   <ItemGroup>
