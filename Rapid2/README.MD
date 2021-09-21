@@ -24,6 +24,8 @@
     "forceChangePassword": false
 }
 ```
+**The REST API uses DisplayName to enable/disable the following usecases:**
+
 if enforceMFA= true -> force MFA
 if enforceMFA= false -> No MFA
 
