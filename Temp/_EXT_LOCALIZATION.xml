@@ -6,7 +6,8 @@
   <BuildingBlocks>
     <ContentDefinitions>
       <ContentDefinition Id="api.account.profile">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=EditProfile</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=EditProfile</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <LocalizedResourcesReferences MergeBehavior="Prepend">
           <LocalizedResourcesReference Language="en" Url="https://bing.com" LocalizedResourcesReferenceId="api.account.profile.en" />
@@ -24,15 +25,18 @@
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:globalexception:1.2.0</DataUri>
       </ContentDefinition>
       <ContentDefinition Id="api.idpselection">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AccountLinkingDragAndDrop</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AccountLinkingDragAndDrop</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:providerselection:1.2.0</DataUri>
       </ContentDefinition>
       <ContentDefinition Id="api.account.termsofservice">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=TOC</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=TOC</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
       </ContentDefinition>
       <ContentDefinition Id="api.enterpriseaccount.registration">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=EARegistration</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=EARegistration</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <LocalizedResourcesReferences MergeBehavior="Prepend">
           <LocalizedResourcesReference Language="en" Url="https://bing.com" LocalizedResourcesReferenceId="api.enterpriseaccount.registration.en" />
@@ -47,7 +51,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.password.verifyEmail">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LaPasswordResetVerifyEmail</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LaPasswordResetVerifyEmail</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -55,7 +60,8 @@
         </Metadata>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.password">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LaPasswordReset</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LaPasswordReset</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.registration">
@@ -75,7 +81,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.registrationByUsername">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByUsername</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByUsername</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -94,7 +101,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.registrationByUsernameAgeGating">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByUsernameAgeGating&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByUsernameAgeGating&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -113,7 +121,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.registrationByPhoneCode">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByPhoneCode&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationByPhoneCode&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -132,7 +141,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.localAccountAgeGating">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LAAgeGating</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LAAgeGating</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -151,7 +161,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.loginByPhoneCode">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByPhoneCode&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByPhoneCode&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -170,7 +181,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.forgotUsername">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=ForgotUsername</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=ForgotUsername</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -189,7 +201,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.forgotUsernameMessage">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=ForgotUsernameMessage</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=ForgotUsernameMessage</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -208,7 +221,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.registrationFromInvitation">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationFromInvitation</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LARegistrationFromInvitation</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -227,7 +241,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.socialaccount.registration">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SARegistration&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SARegistration&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <LocalizedResourcesReferences MergeBehavior="Prepend">
           <LocalizedResourcesReference Language="en" Url="https://bing.com" LocalizedResourcesReferenceId="api.socialaccount.registration.en" />
@@ -242,7 +257,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.socialaccount.registrationAgeGating">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SARegistrationAgeGating</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SARegistrationAgeGating</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -277,7 +293,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.linkaccount">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=Unified&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=Unified&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:providerselection:1.2.0</DataUri>
         <Metadata>
@@ -296,7 +313,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.phonefactor">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=MFA</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=MFA</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:multifactor:1.2.0</DataUri>
         <Metadata>
@@ -315,7 +333,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.login">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALogin&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALogin&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <LocalizedResourcesReferences MergeBehavior="Prepend">
           <LocalizedResourcesReference Language="en" Url="https://bing.com" LocalizedResourcesReferenceId="api.unified.en" />
@@ -330,7 +349,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.loginByUsername">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByUsername</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByUsername</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:unifiedssp:1.0.0</DataUri>
         <Metadata>
@@ -349,7 +369,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.localaccount.loginByPhone">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByUsername&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LALoginByUsername&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:unifiedssp:1.0.0</DataUri>
         <Metadata>
@@ -368,7 +389,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.account.allergyinformation">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AllergyInfo</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AllergyInfo</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -387,7 +409,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.account.allergyinformation.grantConsent">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AllergyInfoConsent</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AllergyInfoConsent</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -406,7 +429,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.account.progressiveProfileAgeGating">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LAProgressiveProfileAgeGating</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=LAProgressiveProfileAgeGating</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -425,7 +449,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.account.inviteUserByEmail">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=InviteUserByEmail</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=InviteUserByEmail</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -449,7 +474,8 @@
       Note: the paged run JavaScript. Use custom or shared domain to allow running client side code -->
       <ContentDefinition Id="api.account.appfactor.registration">
         <!--<LoadUri>~/tenant/default/selfasserted.cshtml</LoadUri>-->
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AppFactorRegistration</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=AppFactorRegistration</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
@@ -468,7 +494,8 @@
         </LocalizedResourcesReferences>
       </ContentDefinition>
       <ContentDefinition Id="api.selfasserted">
-        <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SelfAsserted&amp;SessionId={Context:CorrelationId}</LoadUri>
+        <!-- <LoadUri>https://woodgroveb2cdemo.azurewebsites.net/B2CUI/GetB2CUI?type=SelfAsserted&amp;SessionId={Context:CorrelationId}</LoadUri> -->
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
         <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.0.0</DataUri>
         <Metadata>
