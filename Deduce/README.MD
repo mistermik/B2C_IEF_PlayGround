@@ -32,7 +32,7 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
         
 
   User Journey:
-  
+  ```xml
    <UserJourney Id="SignUpOrSignIn_WithDeduce">
       <OrchestrationSteps>
         <OrchestrationStep Order="1" Type="ClaimsExchange">
