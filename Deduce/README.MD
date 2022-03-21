@@ -3,7 +3,7 @@
 Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml
 
 **selfAsserted.cshtml:** 
-<!-- Hiding panel-default -->
+Hiding panel-default
         <style>
             .panel-default   {
             margin: 0 auto;
