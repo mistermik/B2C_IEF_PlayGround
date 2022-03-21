@@ -2,9 +2,7 @@
  
 Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml
 
-**selfAsserted.cshtml:** 
-
-Hiding panel-default
+**selfAsserted.cshtml: Hiding panel-default**
 ```html
         <style>
             .panel-default   {
@@ -21,8 +19,7 @@ Hiding panel-default
             visibility: hidden;
         }
  ``` 
-Javascript script to read user_agent and submit
-
+**Javascript script to read user_agent and submit**
 ```html
         <script>
              $("#user_agent").hide().val(window.navigator.userAgent);
@@ -34,7 +31,7 @@ Javascript script to read user_agent and submit
         </script>
 ```
 
-  User Journey:
+**  User Journey:**
   ```xml
    <UserJourney Id="SignUpOrSignIn_WithDeduce">
       <OrchestrationSteps>
