@@ -43,7 +43,7 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
         <..>
           
 **Technical Profile:**
-          
+```xml        
 <TechnicalProfile Id="SelfAsserted-UserAgent">
           <DisplayName>Pre-login</DisplayName>
           <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
@@ -61,6 +61,7 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
 </TechnicalProfile>
 
 **Content Definition:**
+```xml
 <ContentDefinition Id="api.selfassertedDeduce">
         <LoadUri>https://b2cdfpj.blob.core.windows.net/isv/selfAsserted.cshtml</LoadUri>
         <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
