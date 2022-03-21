@@ -3,6 +3,7 @@
 Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml
 
 **selfAsserted.cshtml:** 
+
 Hiding panel-default
 ```html
         <style>
@@ -20,8 +21,9 @@ Hiding panel-default
             visibility: hidden;
         }
  ``` 
-<!-- Javascript script to read user_agent and submit -->
-  
+Javascript script to read user_agent and submit
+
+```html
         <script>
              $("#user_agent").hide().val(window.navigator.userAgent);
             var img = new Image();
@@ -30,7 +32,7 @@ Hiding panel-default
             };
             img.src = "https://login.microsoftonline.com/static/tenant/templates/images/logo.svg";
         </script>
-        
+```
 
   User Journey:
   ```xml
