@@ -1,4 +1,5 @@
  self-asserted technical profile with javascript reading user_agent into the claims bag and automatically click the continue button
+ 
 Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml
 
 **selfAsserted.cshtml:** 
