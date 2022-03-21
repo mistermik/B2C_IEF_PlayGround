@@ -4,6 +4,7 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
 
 **selfAsserted.cshtml:** 
 Hiding panel-default
+```html
         <style>
             .panel-default   {
             margin: 0 auto;
@@ -18,7 +19,7 @@ Hiding panel-default
             box-shadow: 0 0 30px 0 #dae1f7;
             visibility: hidden;
         }
-  
+ ``` 
 <!-- Javascript script to read user_agent and submit -->
   
         <script>
