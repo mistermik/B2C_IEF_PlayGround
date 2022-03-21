@@ -41,7 +41,8 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
           </ClaimsExchanges>
         </OrchestrationStep>
         <..>
-          
+```
+         
 **Technical Profile:**
 ```xml        
 <TechnicalProfile Id="SelfAsserted-UserAgent">
@@ -59,7 +60,8 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
             **<OutputClaim ClaimTypeReferenceId="user_agent" />**
           </OutputClaims>
 </TechnicalProfile>
-
+```
+         
 **Content Definition:**
 ```xml
 <ContentDefinition Id="api.selfassertedDeduce">
@@ -70,3 +72,4 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
           <Item Key="DisplayName">Signin and Signup Deduce</Item>
         </Metadata>
 </ContentDefinition>
+```
