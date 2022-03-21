@@ -31,7 +31,7 @@ Based on: https://login.microsoftonline.com/static/tenant/templates/AzureBlue/se
         </script>
 ```
 
-**  User Journey:**
+**User Journey:**
   ```xml
    <UserJourney Id="SignUpOrSignIn_WithDeduce">
       <OrchestrationSteps>
