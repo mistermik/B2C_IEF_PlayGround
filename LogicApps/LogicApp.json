@@ -1,0 +1,446 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workflow_LogicApp_prefix": {
+      "defaultValue": "B2CUserFlow",
+      "type": "String",
+      "metadata": {
+        "description": "The prefix string to add to a generated string that is unique to the resourceGroup."
+      }
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "storage_account_name": "[toLower( concat('azuretables', uniqueString(resourceGroup().id) ) )]",
+    "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storage_account_name'))]",
+    "workflow_LogicApp_name": "[toLower( concat( parameters('workflow_LogicApp_prefix'), uniqueString(resourceGroup().id) ) )]",
+    "connections_azuretables_name": "azuretables",
+    "connections_office365_name": "office365"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2017-07-01",
+      "name": "[variables('workflow_LogicApp_name')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "properties": {
+                    "client_id": {
+                      "type": "string"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "objectId": {
+                      "type": "string"
+                    },
+                    "step": {
+                      "type": "string"
+                    },
+                    "ui_locales": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "actions": {
+            "Get_entities_(V2)": {
+              "runAfter": {},
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuretables']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities",
+                "queries": {
+                  "$filter": "RowKey eq '@{toUpper(triggerBody()?['email'])}'"
+                }
+              }
+            },
+            "if_email_exists_in_Table": {
+              "actions": {
+                "if_isApproved_is_true": {
+                  "actions": {
+                    "Response_Issue_token": {
+                      "runAfter": {},
+                      "type": "Response",
+                      "kind": "Http",
+                      "inputs": {
+                        "body": {
+                          "action": "Continue",
+                          "postalCode": "@{bool(body('Get_entities_(V2)')?['value'][0]?['isApproved'])}",
+                          "version": "1.0.0"
+                        },
+                        "statusCode": 200
+                      }
+                    }
+                  },
+                  "runAfter": {},
+                  "else": {
+                    "actions": {
+                      "if_isApproved_is_false": {
+                        "actions": {
+                          "Response_request_was_rejected": {
+                            "runAfter": {},
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                              "body": {
+                                "action": "ShowBlockPage",
+                                "userMessage": "You request was rejected.",
+                                "version": "1.0.0"
+                              },
+                              "statusCode": 200
+                            }
+                          }
+                        },
+                        "runAfter": {},
+                        "else": {
+                          "actions": {
+                            "Response_is_pending_approval": {
+                              "runAfter": {},
+                              "type": "Response",
+                              "kind": "Http",
+                              "inputs": {
+                                "body": {
+                                  "action": "ShowBlockPage",
+                                  "userMessage": "UserApproval is still pending.",
+                                  "version": "1.0.0"
+                                },
+                                "statusCode": 200
+                              }
+                            }
+                          }
+                        },
+                        "expression": {
+                          "and": [
+                            {
+                              "equals": [
+                                "@string(body('Get_entities_(V2)')?['value'][0]?['isApproved'])",
+                                "false"
+                              ]
+                            }
+                          ]
+                        },
+                        "type": "If"
+                      }
+                    }
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@string(body('Get_entities_(V2)')?['value'][0]?['isApproved'])",
+                          "true"
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Get_entities_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "If_Admin_Approved": {
+                    "actions": {
+                      "Delay_1_week_and_delete_requets": {
+                        "runAfter": {
+                          "Insert_or_Replace_Entity_(V2)_-_isApproved_true": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "Wait",
+                        "inputs": {
+                          "interval": {
+                            "count": 1,
+                            "unit": "Week"
+                          }
+                        }
+                      },
+                      "Delete_Entity_(V2)_-_Delete_request_record": {
+                        "runAfter": {
+                          "Delay_1_week_and_delete_requets": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "ApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connection": {
+                              "name": "@parameters('$connections')['azuretables']['connectionId']"
+                            }
+                          },
+                          "method": "delete",
+                          "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities/etag(PartitionKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['PartitionKey'])}',RowKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['RowKey'])}')"
+                        }
+                      },
+                      "Insert_or_Replace_Entity_(V2)_-_isApproved_true": {
+                        "runAfter": {},
+                        "type": "ApiConnection",
+                        "inputs": {
+                          "body": {
+                            "isApproved": "true"
+                          },
+                          "host": {
+                            "connection": {
+                              "name": "@parameters('$connections')['azuretables']['connectionId']"
+                            }
+                          },
+                          "method": "put",
+                          "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities(PartitionKey='@{encodeURIComponent('email')}',RowKey='@{encodeURIComponent(toUpper(triggerBody()?['email']))}')"
+                        }
+                      }
+                    },
+                    "runAfter": {
+                      "Send_approval_email": [
+                        "Succeeded"
+                      ]
+                    },
+                    "else": {
+                      "actions": {
+                        "Insert_or_Replace_Entity_(V2)_-_isApproved_false": {
+                          "runAfter": {},
+                          "type": "ApiConnection",
+                          "inputs": {
+                            "body": {
+                              "isApproved": "false"
+                            },
+                            "host": {
+                              "connection": {
+                                "name": "@parameters('$connections')['azuretables']['connectionId']"
+                              }
+                            },
+                            "method": "put",
+                            "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities(PartitionKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['PartitionKey'])}',RowKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['RowKey'])}')"
+                          }
+                        }
+                      }
+                    },
+                    "expression": {
+                      "and": [
+                        {
+                          "equals": [
+                            "@body('Send_approval_email')?['SelectedOption']",
+                            "Approve"
+                          ]
+                        }
+                      ]
+                    },
+                    "type": "If"
+                  },
+                  "Insert_Entity_(V2)_Create_request_record": {
+                    "runAfter": {},
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "body": {
+                        "PartitionKey": "email",
+                        "RowKey": "@{toUpper(triggerBody()?['email'])}",
+                        "isApproved": ""
+                      },
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['azuretables']['connectionId']"
+                        }
+                      },
+                      "method": "post",
+                      "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities"
+                    }
+                  },
+                  "Response_2_is_pending_approval": {
+                    "runAfter": {
+                      "Insert_Entity_(V2)_Create_request_record": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Response",
+                    "kind": "Http",
+                    "inputs": {
+                      "body": {
+                        "action": "ShowBlockPage",
+                        "userMessage": "UserApproval is pending.",
+                        "version": "1.0.0"
+                      },
+                      "statusCode": 200
+                    }
+                  },
+                  "Send_approval_email": {
+                    "runAfter": {
+                      "Insert_Entity_(V2)_Create_request_record": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "ApiConnectionWebhook",
+                    "inputs": {
+                      "body": {
+                        "Message": {
+                          "Body": "email: @{triggerBody()?['email']}\n\nDisplayName: @{triggerBody()?['displayName']}",
+                          "HideHTMLMessage": false,
+                          "Importance": "Normal",
+                          "Options": "Approve, Reject",
+                          "ShowHTMLConfirmationDialog": false,
+                          "Subject": "Approval Request",
+                          "To": "approvalb2c@mailinator.com"
+                        },
+                        "NotificationUrl": "@{listCallbackUrl()}"
+                      },
+                      "host": {
+                        "connection": {
+                          "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                      },
+                      "path": "/approvalmail/$subscriptions"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "and": [
+                  {
+                    "greater": [
+                      "@length(body('Get_entities_(V2)')?['value'])",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "type": "If"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azuretables": {
+                "connectionId": "[resourceId('Microsoft.Web/connections', variables('connections_azuretables_name'))]",
+                "connectionName": "[variables('connections_azuretables_name')]",
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'azuretables')]"
+              },
+              "office365": {
+                "connectionId": "[resourceId('Microsoft.Web/connections', variables('connections_office365_name'))]",
+                "connectionName": "[variables('connections_office365_name')]",
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'office365')]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', variables('connections_office365_name'))]",
+        "[resourceId('Microsoft.Web/connections', variables('connections_azuretables_name'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[variables('connections_azuretables_name')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "api": {
+          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'azuretables')]"
+        },
+        "displayName": "azuretables",
+        "parameterValues": {
+          "storageaccount": "[variables('storage_account_name')]",
+          "sharedkey": "[listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2018-07-01-preview",
+      "name": "[variables('connections_office365_name')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "api": {
+          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'office365')]"
+        },
+        "displayName": "office365"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-06-01",
+      "name": "[variables('storage_account_name')]",
+      "location": "westus",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "dnsEndpointType": "Standard",
+        "defaultToOAuthAuthentication": false,
+        "publicNetworkAccess": "Enabled",
+        "allowCrossTenantReplication": true,
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": true,
+        "allowSharedKeyAccess": true,
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "requireInfrastructureEncryption": false,
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2021-09-01",
+      "name": "[concat(variables('storage_account_name'), '/default/UserApproval')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storage_account_name'))]"
+      ],
+      "properties": {}
+    }
+  ],
+  "outputs": {
+  }
+}
