@@ -8,10 +8,16 @@
       "metadata": {
         "description": "The prefix string to add to a generated string that is unique to the resourceGroup."
       }
-    }
-  },
+    },
+      "location": {
+        "defaultValue": "[resourceGroup().location]",
+        "type": "String",
+        "metadata": {
+          "description": "The location where reosurces willbe created."
+        }
+      }
+    },
   "variables": {
-    "location": "[resourceGroup().location]",
     "storage_account_name": "[toLower( concat('azuretables', uniqueString(resourceGroup().id) ) )]",
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storage_account_name'))]",
     "workflow_LogicApp_name": "[toLower( concat( parameters('workflow_LogicApp_prefix'), uniqueString(resourceGroup().id) ) )]",
@@ -23,7 +29,7 @@
       "type": "Microsoft.Logic/workflows",
       "apiVersion": "2017-07-01",
       "name": "[variables('workflow_LogicApp_name')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "state": "Enabled",
         "definition": {
@@ -345,12 +351,12 @@
               "azuretables": {
                 "connectionId": "[resourceId('Microsoft.Web/connections', variables('connections_azuretables_name'))]",
                 "connectionName": "[variables('connections_azuretables_name')]",
-                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'azuretables')]"
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'azuretables')]"
               },
               "office365": {
                 "connectionId": "[resourceId('Microsoft.Web/connections', variables('connections_office365_name'))]",
                 "connectionName": "[variables('connections_office365_name')]",
-                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'office365')]"
+                "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'office365')]"
               }
             }
           }
@@ -365,10 +371,10 @@
       "type": "Microsoft.Web/connections",
       "apiVersion": "2018-07-01-preview",
       "name": "[variables('connections_azuretables_name')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "api": {
-          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'azuretables')]"
+          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'azuretables')]"
         },
         "displayName": "azuretables",
         "parameterValues": {
@@ -381,10 +387,10 @@
       "type": "Microsoft.Web/connections",
       "apiVersion": "2018-07-01-preview",
       "name": "[variables('connections_office365_name')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "api": {
-          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', variables('location'), 'office365')]"
+          "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'office365')]"
         },
         "displayName": "office365"
       }
