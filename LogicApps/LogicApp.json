@@ -130,37 +130,6 @@
                 "actions": {
                   "If_Admin_Approved": {
                     "actions": {
-                      "Delay_1_week_and_delete_requets": {
-                        "inputs": {
-                          "interval": {
-                            "count": 1,
-                            "unit": "Week"
-                          }
-                        },
-                        "runAfter": {
-                          "Insert_or_Replace_Entity_(V2)_-_isApproved_true": [
-                            "Succeeded"
-                          ]
-                        },
-                        "type": "Wait"
-                      },
-                      "Delete_Entity_(V2)_-_Delete_request_record": {
-                        "inputs": {
-                          "host": {
-                            "connection": {
-                              "name": "@parameters('$connections')['azuretables']['connectionId']"
-                            }
-                          },
-                          "method": "delete",
-                          "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities/etag(PartitionKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['PartitionKey'])}',RowKey='@{encodeURIComponent(body('Insert_Entity_(V2)_Create_request_record')?['RowKey'])}')"
-                        },
-                        "runAfter": {
-                          "Delay_1_week_and_delete_requets": [
-                            "Succeeded"
-                          ]
-                        },
-                        "type": "ApiConnection"
-                      },
                       "Insert_or_Replace_Entity_(V2)_-_isApproved_true": {
                         "inputs": {
                           "body": {
@@ -175,6 +144,28 @@
                           "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('UserApproval')}/entities(PartitionKey='@{encodeURIComponent('email')}',RowKey='@{encodeURIComponent(toUpper(triggerBody()?['email']))}')"
                         },
                         "runAfter": {},
+                        "type": "ApiConnection"
+                      },
+                      "Send_an_email_(V2)": {
+                        "inputs": {
+                          "body": {
+                            "Body": "<p>Your request has been approved.</p>",
+                            "Subject": "B2C Flow - Request Approved",
+                            "To": "@triggerBody()?['email']"
+                          },
+                          "host": {
+                            "connection": {
+                              "name": "@parameters('$connections')['office365']['connectionId']"
+                            }
+                          },
+                          "method": "post",
+                          "path": "/v2/Mail"
+                        },
+                        "runAfter": {
+                          "Insert_or_Replace_Entity_(V2)_-_isApproved_true": [
+                            "Succeeded"
+                          ]
+                        },
                         "type": "ApiConnection"
                       }
                     },
